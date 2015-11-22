@@ -63,19 +63,21 @@ var Player = function() {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function(allEnemies) {
-    if (this.y < 1) {
+    if (this.y < 1 || this.is_collision(allEnemies)) {
         this.x = 2;
         this.y = 5;
-    } else {
-        for (e in allEnemies) {
-            if (allEnemies[e].x > this.x - 0.75 && allEnemies[e].x <= this.x + 0.75) {
-                if (this.y == allEnemies[e].y) {
-                    this.x = 2;
-                    this.y = 5;
-                }
+    }
+};
+
+Player.prototype.is_collision = function(list) {
+    for (e in list) {
+        if (this.y == list[e].y) {
+            if (list[e].x > this.x - 0.75 && list[e].x < this.x + 0.75) {
+                return true;
             }
         }
     }
+    return false;
 };
 
 // Draw the enemy on the screen, required method for game
