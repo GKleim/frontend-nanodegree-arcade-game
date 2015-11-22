@@ -7,7 +7,7 @@ var Enemy = function(y, speed) {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
 
-    // Allowable values: x-->0-4 (5 total), y-->1-3 (3 total, integer)
+    // Allowable y values: 1-3, integer
     this.x = -101;
     this.y = y * 83 - 83/3;
 
@@ -23,6 +23,7 @@ Enemy.prototype.update = function(dt) {
 
     if (this.x >= 606){
         this.x = -101;
+        // respawn enemy at a random row
         this.y = Math.floor((Math.random() * 3) + 1) * 83 - 83/3;
     }
     else{
