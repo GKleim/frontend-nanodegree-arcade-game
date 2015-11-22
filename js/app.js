@@ -51,12 +51,23 @@ var Player = function() {
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
-Player.prototype.update = function() {
+Player.prototype.update = function(allEnemies) {
+    var will_break = false;
     if (this.y < 1) {
         this.x = 2;
         this.y = 5;
+    } else {
+        y = this.y * 83 - 83/3;
+        x = this.x * 101;
+        for (e in allEnemies) {
+            if (x <= allEnemies[e].x && x >= allEnemies[e].x - 101) {
+                if (y == allEnemies[e].y) {
+                    this.x = 2;
+                    this.y = 5;
+                }
+            }
+        }
     }
-
 };
 
 // Draw the enemy on the screen, required method for game
