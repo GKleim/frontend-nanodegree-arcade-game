@@ -1,5 +1,9 @@
+var x_px = 101;
+var y_px = 83;
+var y_offset = 101/4;
+
 // Enemies our player must avoid
-var Enemy = function(y, speed) {
+var Enemy = function(speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -8,10 +12,10 @@ var Enemy = function(y, speed) {
     this.sprite = 'images/enemy-bug.png';
 
     // Allowable y values: 1-3, integer
-    this.x = -101;
-    this.y = y * 83 - 83/3;
+    this.x = -1;
+    this.y = this.random_row();
 
-    this.speed = speed * 100;
+    this.speed = speed;
 };
 
 // Update the enemy's position, required method for game
@@ -21,10 +25,10 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
 
-    if (this.x >= 606){
-        this.x = -101;
+    if (this.x >= 6){
+        this.x = -1;
         // respawn enemy at a random row
-        this.y = Math.floor((Math.random() * 3) + 1) * 83 - 83/3;
+        this.y = this.random_row();
     }
     else{
         this.x = this.x + this.speed * dt;
@@ -33,7 +37,13 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    var x_pos = this.x * x_px;
+    var y_pos = this.y * y_px - y_offset;
+    ctx.drawImage(Resources.get(this.sprite), x_pos, y_pos);
+};
+
+Enemy.prototype.random_row = function() {
+    return Math.floor((Math.random() * 3) + 1);
 };
 
 // Now write your own player class
@@ -53,16 +63,13 @@ var Player = function() {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function(allEnemies) {
-    var will_break = false;
     if (this.y < 1) {
         this.x = 2;
         this.y = 5;
     } else {
-        y = this.y * 83 - 83/3;
-        x = this.x * 101;
         for (e in allEnemies) {
-            if (x <= allEnemies[e].x && x >= allEnemies[e].x - 101) {
-                if (y == allEnemies[e].y) {
+            if (allEnemies[e].x > this.x - 0.75 && allEnemies[e].x <= this.x + 0.75) {
+                if (this.y == allEnemies[e].y) {
                     this.x = 2;
                     this.y = 5;
                 }
@@ -73,29 +80,29 @@ Player.prototype.update = function(allEnemies) {
 
 // Draw the enemy on the screen, required method for game
 Player.prototype.render = function() {
-    x = this.x * 101;
-    y = this.y * 83 - 83/3;
-    ctx.drawImage(Resources.get(this.sprite), x, y);
+    var x_pos = this.x * x_px;
+    var y_pos = this.y * y_px - y_offset;
+    ctx.drawImage(Resources.get(this.sprite), x_pos, y_pos);
 };
 
 Player.prototype.handleInput = function(key) {
     if (key == 'left' && this.x > 0){
-        this.x = this.x - 1;
+        this.x = --this.x;
     } else if (key == 'up' && this.y > 0) {
-        this.y = this.y - 1;
+        this.y = --this.y;
     } else if (key == 'right' && this.x < 4) {
-        this.x = this.x + 1;
+        this.x = ++this.x;
     } else if (key == 'down' && this.y < 5) {
-        this.y = this.y + 1;
+        this.y = ++this.y;
     }
 };
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var enemy1 = new Enemy(1,1);
-var enemy2 = new Enemy(2,2);
-var enemy3 = new Enemy(3,1.5);
+var enemy1 = new Enemy(1);
+var enemy2 = new Enemy(2);
+var enemy3 = new Enemy(1.5);
 
 var allEnemies = [enemy1, enemy2, enemy3];
 
