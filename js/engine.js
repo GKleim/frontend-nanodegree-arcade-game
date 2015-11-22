@@ -152,7 +152,7 @@ var Engine = (function(global) {
             enemy.render();
         });
 
-        //player.render();
+        player.render();
     }
 
     /* This function does nothing but it could have been a good place to
