@@ -8,7 +8,7 @@ var Enemy = function(y, speed) {
     this.sprite = 'images/enemy-bug.png';
 
     // Allowable values: x-->0-4 (5 total), y-->1-3 (3 total, integer)
-    this.x = -101
+    this.x = -101;
     this.y = y * 83 - 83/3;
 
     this.speed = speed * 100;
@@ -21,7 +21,13 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
 
-    this.x = this.x + this.speed * dt;
+    if (this.x >= 606){
+        this.x = -101;
+        this.y = Math.floor((Math.random() * 3) + 1) * 83 - 83/3;
+    }
+    else{
+        this.x = this.x + this.speed * dt;
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -62,6 +68,7 @@ var enemy2 = new Enemy(2,2);
 var enemy3 = new Enemy(3,1.5);
 
 var allEnemies = [enemy1, enemy2, enemy3];
+
 var player = [];
 
 
