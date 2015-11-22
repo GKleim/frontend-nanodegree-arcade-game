@@ -1,22 +1,39 @@
+// canvas grid dimensions
 var x_px = 101;
 var y_px = 83;
 var y_offset = 101/4;
 
-// Enemies our player must avoid
-var Enemy = function(speed) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+// Superclass for animated objects
+var Thing = function(x, y, img) {
+    // x & y positions
+    this.x = x;
+    this.y = y;
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+    this.sprite = img;
+}
 
-    // Allowable y values: 1-3, integer
-    this.x = -1;
-    this.y = this.random_row();
+Thing.prototype.render = function() {
+    var x_pos = this.x * x_px;
+    var y_pos = this.y * y_px - y_offset;
+    ctx.drawImage(Resources.get(this.sprite), x_pos, y_pos);
+};
+
+// Enemies our player must avoid
+var Enemy = function(speed) {
+    // arguments for Thing constructor
+    var y = this.random_row();
+    var img = 'images/enemy-bug.png';
+
+    // Thing constructor
+    Thing.call(this, -1, y, img);
 
     this.speed = speed;
 };
+
+Enemy.prototype = Object.create(Thing.prototype);
+Enemy.prototype.constructor = Enemy;
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -35,33 +52,21 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    var x_pos = this.x * x_px;
-    var y_pos = this.y * y_px - y_offset;
-    ctx.drawImage(Resources.get(this.sprite), x_pos, y_pos);
-};
-
 Enemy.prototype.random_row = function() {
     return Math.floor((Math.random() * 3) + 1);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
-var Player = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = 'images/char-boy.png';
-    this.x = 2;
-    this.y = 5;
+// Player class
+var Player = function() {
+    var img = 'images/char-boy.png';
+    Thing.call(this, 2, 5, img);
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+Player.prototype = Object.create(Thing.prototype);
+Player.prototype.constructor = Player;
+
+// Reset player's position if required
 Player.prototype.update = function(allEnemies) {
     if (this.y < 1 || this.is_collision(allEnemies)) {
         this.x = 2;
@@ -69,6 +74,7 @@ Player.prototype.update = function(allEnemies) {
     }
 };
 
+// Return true if player is colliding with another object
 Player.prototype.is_collision = function(list) {
     for (e in list) {
         if (this.y == list[e].y) {
@@ -78,13 +84,6 @@ Player.prototype.is_collision = function(list) {
         }
     }
     return false;
-};
-
-// Draw the enemy on the screen, required method for game
-Player.prototype.render = function() {
-    var x_pos = this.x * x_px;
-    var y_pos = this.y * y_px - y_offset;
-    ctx.drawImage(Resources.get(this.sprite), x_pos, y_pos);
 };
 
 Player.prototype.handleInput = function(key) {
@@ -102,11 +101,11 @@ Player.prototype.handleInput = function(key) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var enemy1 = new Enemy(1);
-var enemy2 = new Enemy(2);
-var enemy3 = new Enemy(1.5);
-
-var allEnemies = [enemy1, enemy2, enemy3];
+var allEnemies = [
+    new Enemy(1),
+    new Enemy(2),
+    new Enemy(3)
+];
 
 var player = new Player();
 
