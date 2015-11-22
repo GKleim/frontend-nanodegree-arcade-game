@@ -94,6 +94,7 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+        // Geoff K: I added allEnemies as an argument
         player.update(allEnemies);
     }
 

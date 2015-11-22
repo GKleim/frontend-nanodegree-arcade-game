@@ -33,6 +33,7 @@ var Enemy = function(speed) {
 };
 
 Enemy.prototype = Object.create(Thing.prototype);
+// constructor method is required because the prototype was overwritten
 Enemy.prototype.constructor = Enemy;
 
 // Update the enemy's position, required method for game
